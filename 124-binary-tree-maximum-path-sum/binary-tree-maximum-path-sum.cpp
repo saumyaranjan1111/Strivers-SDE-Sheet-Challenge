@@ -11,23 +11,24 @@
  */
 class Solution {
 public:
-    int maxpathdown(TreeNode* root, int &maxi){
-        if(root == NULL){
-            return 0;
-        }
+    int solve(TreeNode* root, int &ans){
+        if(root == NULL) return 0;
 
-        int leftsum = maxpathdown(root->left, maxi);
-        int rightsum = maxpathdown(root->right, maxi);
+        // max vertical path sum whose starting node is the left node
+        int left = solve(root->left, ans);
 
-        maxi = max(maxi, leftsum + rightsum + root->val);
+        // max vertical path sum whose starting node is the right node
+        int right = solve(root->right, ans);
+        
+        // if this node lies on the maxsum path, then we update the ans
+        ans = max(ans, left + right + root->val);
 
-        return max(0, root->val + max(leftsum, rightsum));
+        // we are updating the ans, but we are returning the max vertical path sum which includes this node
+        return max(0, root->val + max(left, right));
     }
     int maxPathSum(TreeNode* root) {
-        int maxi = INT_MIN;
-
-        int temp = maxpathdown(root, maxi);
-
-        return maxi;
+        int ans = INT_MIN;
+        int temp = solve(root, ans);
+        return ans;
     }
 };
