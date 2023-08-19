@@ -9,29 +9,40 @@
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
+
+//  Morris Preorder Traversal
 class Solution {
 public:
+    TreeNode* findPredecessor(TreeNode* curr){
+        TreeNode* pred = curr->left;
+        while(pred->right!=NULL && pred->right!=curr){
+            pred = pred->right;
+        }
+        return pred;
+    }
     vector<int> preorderTraversal(TreeNode* root) {
-        // iterative method
-
+        TreeNode* curr = root;
         vector<int> ans;
-        stack<TreeNode*> st;
-
-        if(root == NULL) return ans;
-        
-        st.push(root);
-
-        while(!st.empty()){
-            auto temp = st.top();
-            st.pop();
-
-            ans.push_back(temp->val);
-
-            if(temp -> right != NULL)
-            st.push(temp->right);
-
-            if(temp -> left != NULL)
-            st.push(temp->left);
+        while(curr!=NULL){
+            if(curr->left != NULL){
+                TreeNode* predecessor = findPredecessor(curr);
+                if(predecessor -> right == NULL){
+                    // create a link
+                    predecessor -> right = curr;
+                    ans.push_back(curr->val);
+                    curr = curr->left;
+                }
+                else {
+                    predecessor -> right = NULL;
+                    curr = curr->right;
+                }
+            }
+            else
+            {
+                ans.push_back(curr->val);
+                curr = curr->right;
+            }
         }
         return ans;
     }
