@@ -10,38 +10,23 @@
  * };
  */
 class Solution {
+    private: 
+    int ind = 0;
 public:
-    // n*n solution
-    TreeNode* helper(vector<int>& preorder, int left, int right){
-        if(left > right) return NULL;
-        if(left <0 || right <0) return NULL;
+    TreeNode* helper(vector<int>& preorder, int limit){
+        if(ind >= preorder.size() || preorder[ind] > limit) return NULL;
 
-        TreeNode* root = new TreeNode(preorder[left]);
-        int pivot = -1;
-        int i = left+1;
-        while(i<=right && preorder[i] < root->val) i++;
-        pivot = i;
-
-        root->left = helper(preorder, left+1, pivot-1);
-        root->right = helper(preorder, pivot, right);
-
+        TreeNode* root = new TreeNode(preorder[ind]);
+        ind++;
+        root->left = helper(preorder, root->val);
+        root->right = helper(preorder, limit);
         return root;
     }
     TreeNode* bstFromPreorder(vector<int>& preorder) {
-        int n = preorder.size();
-        if(n==0) return NULL;
-        int left = 0;
-        int right = n-1;
-        TreeNode* root = new TreeNode(preorder[left]);
+        if(preorder.empty()) return NULL;
 
-        int pivot = -1;
-
-        int i = left+1; 
-        while(i<=right && preorder[i] < root->val) i++;
-        pivot = i;
-        root->left = helper(preorder, left + 1, pivot-1);
-        root->right = helper(preorder, pivot, right);
-
+        TreeNode* root = helper(preorder, INT_MAX);
+        // helper will make the tree from index 0
         return root;
     }
 };
