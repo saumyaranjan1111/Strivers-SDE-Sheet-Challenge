@@ -11,6 +11,7 @@
  */
 class Solution {
 public:
+    // n*n solution
     TreeNode* helper(vector<int>& preorder, int left, int right){
         if(left > right) return NULL;
         if(left <0 || right <0) return NULL;
