@@ -1,28 +1,35 @@
 class Solution {
 public:
-    void floodfill(vector<vector<int>>& image, int row, int col, int color, int curr)
-    {
+    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
+        int ogcolor = image[sr][sc];
         int n = image.size();
         int m = image[0].size();
 
-        if(row<0||row>=n||col<0||col>=m) return;
-        
-        // basically a way to mark visited
-        if(image[row][col] == color) return;
-        
-        if(image[row][col] != curr) return;
+        queue<pair<int, int>> q;
+        q.push({sr, sc});
+        image[sr][sc] = color;
 
-        image[row][col] = color;
+        while(!q.empty()){
+            auto node = q.front();
+            int row = node.first;
+            int col = node.second;
 
-        floodfill(image, row-1, col, color, curr);
-        floodfill(image, row, col-1, color, curr);
-        floodfill(image, row+1, col, color, curr);
-        floodfill(image, row, col+1, color, curr);
-    }
+            q.pop();
 
-    vector<vector<int>> floodFill(vector<vector<int>>& image, int sr, int sc, int color) {
-        int curr = image[sr][sc];
-        floodfill(image, sr, sc, color, curr);
+            int dr[] = {-1, 0, 1, 0};
+            int dc[] = {0, -1, 0, 1};
+
+            for(int i = 0; i<4; i++){
+                int newr = row + dr[i];
+                int newc = col + dc[i];
+
+                if((newr >= 0 && newr < n) && (newc >= 0 && newc < m) && image[newr][newc] == ogcolor && image[newr][newc] != color){
+                    q.push({newr, newc});
+                    image[newr][newc] = color;
+                }
+            }
+        }
+
         return image;
     }
 };
