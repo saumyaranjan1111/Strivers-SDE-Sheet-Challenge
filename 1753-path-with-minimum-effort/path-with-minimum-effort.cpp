@@ -1,51 +1,63 @@
 class Solution {
-public:
-    int minimumEffortPath(vector<vector<int>>& heights) {
+private:
+    bool dfs(int mineffort, int row, int col, vector<vector<int>>& heights, int patheffort, vector<vector<bool>>& vis){
         int n = heights.size();
         int m = heights[0].size();
         
-        vector<vector<int>> mineffort(n, vector<int>(m, INT_MAX));
-        mineffort[0][0] = 0;
-        set<pair<int, pair<int, int>>> st;
+        if(row<0 || row>=n || col<0 || col>=m) return false;
+        if(patheffort > mineffort) return false;
+        if(vis[row][col]) return false;
 
-        st.insert({0, {0, 0}});
+        if(row == n-1 && col == m-1) return true;
 
-        while(!st.empty()){
-            auto temp = *(st.begin());
-            int parenteffort = temp.first;
-            int row = temp.second.first;
-            int col = temp.second.second;
+        vis[row][col] = true;
+        int dr[] = {-1, 0, 1, 0};
+        int dc[] = {0, -1, 0, 1};
 
-            if(row == n-1 && col == m-1){
-                // this final node is about to go out of the pq, that means that there exists no node which will contain the same row and col with a lower effort since priority queue will spit out the lowest effort node first and hence even if there are other instances of the same node in the pq, we can be assured that those all contain efforts more than this one
-                return parenteffort;
-            }
-            st.erase(st.begin());
+        for(int i = 0; i<4; i++){
+            int newr = row + dr[i];
+            int newc = col + dc[i];
 
-            int dr[] = {-1, 0, 1, 0};
-            int dc[] = {0, -1, 0, 1};
+            if(newr>=0 && newr<n && newc>=0 && newc<m){
+                int neweffort = abs(heights[row][col] - heights[newr][newc]);
+                int currpatheffort = max(patheffort, neweffort);
 
-            for(int i = 0; i<4; i++){
-                int crow = row + dr[i];
-                int ccol = col + dc[i];
-
-                if(crow>=0 && crow<n && ccol>=0 && ccol<m){
-
-                    int effortfromparent = abs(heights[row][col] - heights[crow][ccol]);
-                    
-                    // minimum effor for this current path, would be the maximum of the min effort till now in this path, and the new jump that we are trying to make
-                    // if this new jump has an effort that is greater than the greatest effort in this path till now, then the new effort of this path would be the new effort and hence when we reach crow, ccol using this path, we will have an effort equal to mineffortfromcurrentpath
-                    int mineffortfromcurrentpath = max(parenteffort, effortfromparent);
-
-                    if(mineffortfromcurrentpath < mineffort[crow][ccol]){
-                        // if this path is better than all the paths that lead upto this crow, ccol till now, then update the min effort needed to reach crow, ccol 
-                        mineffort[crow][ccol] = mineffortfromcurrentpath;
-                        st.insert({mineffortfromcurrentpath, {crow, ccol}});
-                    }
-                }
+                if(dfs(mineffort, newr, newc, heights, currpatheffort, vis)) return true;
             }
         }
-        return -1;
+        return false;
+    }
 
+    bool isPathPossible(int mineffort, int row, int col, vector<vector<int>>& heights){
+        int n = heights.size();
+        int m = heights[0].size();
+        vector<vector<bool>> vis(n, vector<bool>(m, false));
+        return dfs(mineffort, row, col, heights, 0, vis);
+    }
+
+public:
+    int minimumEffortPath(vector<vector<int>>& heights) {
+        // solution 2 : using binary search on range + dfs
+        int n = heights.size();
+        int m = heights[0].size();
+
+        int low = 0, high = (int)1e6;
+        int mid = low + (high-low)/2;
+
+        int ans = -1;
+        while(low <= high){
+            mid = low + (high-low)/2;
+            if(isPathPossible(mid, 0, 0, heights)){
+                // if a path with "mid" effort is possible
+                // then search for a smaller answer
+                // and update ans
+                ans = mid;
+                high = mid-1;
+            }
+            else {
+                low = mid+1;
+            }
+        }
+        return ans;
     }
 };
