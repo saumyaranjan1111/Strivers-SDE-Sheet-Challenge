@@ -1,11 +1,12 @@
 class Solution {
 public:
     int findCheapestPrice(int n, vector<vector<int>>& flights, int src, int dst, int k) {
-        int m = flights.size();
-        vector<vector<pair<int, int>>> graph(n);
-
+        // using bfs
+        
         // make a graph
-        for(auto edge : flights){
+        vector<vector<pair<int, int>>> graph(n);
+        int m = flights.size();
+        for(auto edge :flights){
             int u = edge[0];
             int v = edge[1];
             int wt = edge[2];
@@ -13,36 +14,37 @@ public:
             graph[u].push_back({v, wt});
         }
 
-        // make a priority queue of the form {dist, {node, stops}}
-        
-        set<pair<int, pair<int, int>>> st;
-        st.insert({0, {src, 0}});
+        // make a queue to store {stops, node, distance}
+        queue<pair<int, pair<int, int>>> q;
+        q.push({0, {src, 0}});
+
+        // make a distance array
         vector<int> dist(n, INT_MAX);
         dist[src] = 0;
 
-        while(!st.empty()){
-            auto temp = *(st.begin());
-            int distance = temp.first;
-            int parentnode = temp.second.first;
-            int stops = temp.second.second;
-            if(parentnode == dst) break;
-            st.erase(st.begin());
+        // perform the algo
+        while(!q.empty()){
+            auto temp = q.front();
+            int stops = temp.first;
+            int node = temp.second.first;
+            int distance = temp.second.second;
+            q.pop();
 
-            for(auto child : graph[parentnode]){
-                int childnode = child.first;
+            if(stops>k) break;
+
+            for(auto child : graph[node]){
+                int cnode = child.first;
                 int edgewt = child.second;
-                if(dist[childnode] > distance + edgewt && stops <= k){
-                    dist[childnode] = distance + edgewt;
-                    st.insert({dist[childnode], {childnode, stops+1}});
-                }
-                else if(stops <= k){
-                    st.insert({distance + edgewt, {childnode, stops+1}});
+
+                if(edgewt + distance < dist[cnode] && stops<=k){
+                    // if the current path is the best path found till now and the stops are within limit, update the distance array and push the new path to cnode to the queue
+                    dist[cnode] = edgewt+distance;
+                    q.push({stops+1, {cnode, edgewt + distance}});
                 }
             }
         }
 
         if(dist[dst] == INT_MAX) return -1;
-        
         return dist[dst];
     }
 };
