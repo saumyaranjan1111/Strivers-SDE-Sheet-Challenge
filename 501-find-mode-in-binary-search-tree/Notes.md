@@ -1,1 +1,1 @@
-<h2>find-mode-in-binary-search-tree Notes</h2><hr>use a 
+<h2>find-mode-in-binary-search-tree Notes</h2><hr>use an inorder tra
