@@ -1,3 +1,3 @@
 <h2>find-mode-in-binary-search-tree Notes</h2><hr>use an inorder traversal since this is a bst
 the way in which you traverse would turn out be sorted so just compare the current node with the value of the previous node in the traversal, if the values are the same then increase the current count by 1, if the values are different make the current count == 1, 
-now check if the current count > maxcount, if that is the case, we have found a new element whose count > 
+now check if the current count > maxcount, if that is the case, we have found a new element whose count
