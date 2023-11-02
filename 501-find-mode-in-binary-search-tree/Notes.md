@@ -1,1 +1,2 @@
-<h2>find-mode-in-binary-search-tree Notes</h2><hr>use an inorder traversal 
+<h2>find-mode-in-binary-search-tree Notes</h2><hr>use an inorder traversal since this is a bst
+the 
