@@ -1,81 +1,53 @@
 class Solution {
-private: 
-    vector<int> djikstra(vector<vector<pair<int, int>>> &graph, int s){
-        int n = graph.size();
-        vector<int> dist(n, INT_MAX);
-
-        dist[s] = 0;
-        priority_queue<pair<int, int>, vector<pair<int, int>>, greater<pair<int, int>>> pq;
-        pq.push({0, s});
-
-        while(!pq.empty()){
-            auto temp = pq.top();
-            pq.pop();
-
-            int pathdist = temp.first;
-            int node = temp.second;
-
-            for(auto child : graph[node]){
-                int childnode = child.second;
-                int edgewt = child.first;
-
-                if(dist[childnode] > pathdist + edgewt){
-                    dist[childnode] = pathdist + edgewt;
-                    pq.push({dist[childnode] , childnode});
-                }
-            }
-        }
-
-        return dist;
-    }
 public:
     int findTheCity(int n, vector<vector<int>>& edges, int distanceThreshold) {
-        // solution 1: using multinode djikstra
-        // use djikstra from each node seperately, and then choose the city which can reach the least amount of cities from it
+        // solution 2 : floyd warshall : multisources shortest path between any two pair of nodes
 
-        // make a graph from the edges 
-        vector<vector<pair<int, int>>> graph(n);
+        vector<vector<int>> dp(n, vector<int> (n, INT_MAX));
         for(auto edge : edges){
             int u = edge[0];
             int v = edge[1];
             int wt = edge[2];
 
-            graph[u].push_back({wt, v});
-            graph[v].push_back({wt, u});
+            dp[u][v] = wt;
+            dp[v][u] = wt;
         }
-
-        // create a n*n matrix which will contain the distance from all the nodes to all the other nodes
-        vector<vector<int>> distance(n, vector<int>(n, INT_MAX));
         for(int i = 0; i<n; i++){
-            distance[i] = djikstra(graph, i);
+            dp[i][i] = 0;
         }
 
-        // citycount[i] : no of cities that the city i connects to within the thresholdDistance
-        vector<int> citycount(n);
+        for(int k = 0; k<n; k++){
+            for(int i = 0; i<n; i++){
+                for(int j = 0; j<n; j++){
+                    if(dp[i][k] == INT_MAX || dp[k][j] == INT_MAX){
+                        continue;
+                    }
 
+                    dp[i][j] = min(dp[i][j], dp[i][k] + dp[k][j]);
+                }
+            }
+        }
+
+        int mincount = INT_MAX;
+        vector<int> counts(n);
         for(int i = 0; i<n; i++){
             int count = 0;
             for(int j = 0; j<n; j++){
-                if(distance[i][j] <= distanceThreshold){
+                if(dp[i][j] <= distanceThreshold){
                     count++;
                 }
             }
-            citycount[i] = count;
+            mincount = min(mincount, count);
+            counts[i] = count;
         }
 
-        // find the minimum value from all such counts
-        int minval = INT_MAX;
+        int ans;
         for(int i = 0; i<n; i++){
-            minval = min(minval, citycount[i]);
+            if(counts[i] == mincount) ans = i;
         }
 
-        vector<int> answers;
-        for(int i = 0; i<n; i++){
-            if(minval == citycount[i]){
-                answers.push_back(i);
-            }
-        }
-        sort(answers.begin(), answers.end());
-        return answers[answers.size()-1];
+        return ans;
+
+
     }
 };
