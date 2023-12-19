@@ -11,10 +11,9 @@ public:
                     st.pop();
                 }
                 
-                if(st.empty()){
+                if(st.empty() || st.top() < 0){
                     st.push(x);
                 }
-                else if(st.top() < 0) st.push(x);
                 else if(st.top() == abs(x)) st.pop();
             }
         }
