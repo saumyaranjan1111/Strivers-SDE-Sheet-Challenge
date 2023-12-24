@@ -44,7 +44,7 @@ public:
             long long v = changed[i] - 'a';
             long long wt = cost[i];
             
-            graph[u][v] = graph[u][v] == 0 ? cost[i] : min(graph[u][v], (long long)cost[i]);
+            graph[u][v] = min(graph[u][v], (long long)cost[i]);
         }
         
         for(long long i = 0; i<26; i++){
