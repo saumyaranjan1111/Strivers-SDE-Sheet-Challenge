@@ -1,6 +1,7 @@
 class Solution {
 public:
     vector<vector<int>> findMatrix(vector<int>& nums) {
+        // nlogn
         int n = nums.size();
         vector<vector<int>> ans;
 
