@@ -1,30 +1,25 @@
 class Solution {
 public:
     vector<vector<int>> findMatrix(vector<int>& nums) {
-        // nlogn
+        // n
         int n = nums.size();
-        vector<vector<int>> ans;
+        vector<int> freq(n+1, 0);
+        for(auto &x : nums) freq[x]++;
 
-        unordered_map<int, int> freq;
         int rows = 0;
-        for(auto &x : nums){
-            freq[x]++;
-        }
+        for(int i = 0; i<=n; i++) rows = max(rows, freq[i]);
 
-        for(auto it = freq.begin(); it!= freq.end(); it++){
-            rows = max(rows, it->second);
-        }
+        vector<vector<int>> ans(rows);
 
-        while(!freq.empty()){
-            vector<int> temp;
-            for(auto it = freq.begin(); it!= freq.end(); it++){
-                if(it->second > 0){
-                    temp.push_back(it->first);
-                    it->second = it->second - 1;
-                }
+        int row = 0;
+
+        for(int i = 1; i<=n; i++){
+            while(freq[i] > 0){
+                ans[row].push_back(i);
+                row++;
+                row = row%rows;
+                freq[i]--;
             }
-            if(temp.size() == 0) break;
-            ans.push_back(temp);
         }
 
         return ans;
