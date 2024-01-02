@@ -4,7 +4,7 @@ public:
         int n = nums.size();
         vector<vector<int>> ans;
 
-        map<int, int> freq;
+        unordered_map<int, int> freq;
         int rows = 0;
         for(auto &x : nums){
             freq[x]++;
