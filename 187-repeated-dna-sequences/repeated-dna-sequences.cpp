@@ -7,7 +7,7 @@ public:
         vector<string> ans;
         if(n < 10) return ans;
         
-        map<string, ll> mp;
+        unordered_map<string, ll> mp;
 
         ll l = 0, r = 10;
         string curr = "";
