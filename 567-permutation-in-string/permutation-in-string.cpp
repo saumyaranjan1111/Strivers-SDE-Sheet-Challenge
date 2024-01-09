@@ -9,16 +9,6 @@ public:
         }
         return true;
     }
-
-    bool checkmap(map<char, ll> &mp1, map<char, ll> &mp2){
-        if(mp1.size() != mp2.size()) return false;
-
-        for(auto it = mp1.begin(), it2 = mp2.begin(); it!= mp1.end(); it++, it2++){
-            if(it->first != it2->first || it->second != it2->second) return false;
-        }
-
-        return true;
-    }
     bool checkInclusion(string s1, string s2) {
         ll n = s1.size(), m = s2.size();
         if(n > m) return false;
@@ -45,8 +35,6 @@ public:
             if(left.find(s2[i]) != left.end() && left.find(s2[i])->second >= right[s2[i]]) count++;
         }
 
-        if(checkmap(left, right)) return true;
-
         if(count == n) return true;
 
         for(ll r = n; r<m; r++){
@@ -63,7 +51,6 @@ public:
             }
 
             if(count == n) return true;
-            // if(checkmap(left, right)) return true;
         }
 
         return false;
