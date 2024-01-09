@@ -39,20 +39,31 @@ public:
             left[c]++;
         }
 
+        ll count = 0;
         for(ll i = 0; i<n; i++){
             right[s2[i]]++;
+            if(left.find(s2[i]) != left.end() && left.find(s2[i])->second >= right[s2[i]]) count++;
         }
 
         if(checkmap(left, right)) return true;
 
+        if(count == n) return true;
+
         for(ll r = n; r<m; r++){
             right[s2[r]]++;
+            if(left.find(s2[r]) != left.end() && left.find(s2[r])->second >= right[s2[r]]) count++;
+            
             right[s2[r-n]]--;
+            if(left.find(s2[r-n]) != left.end()){
+                if(left.find(s2[r-n])->second > right[s2[r-n]]) count--;
+            }
+
             if(right[s2[r-n]] == 0){
                 right.erase(s2[r-n]);
             }
 
-            if(checkmap(left, right)) return true;
+            if(count == n) return true;
+            // if(checkmap(left, right)) return true;
         }
 
         return false;
