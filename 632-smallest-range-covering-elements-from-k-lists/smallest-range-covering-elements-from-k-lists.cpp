@@ -1,42 +1,48 @@
 class Solution {
 public:
     vector<int> smallestRange(vector<vector<int>>& nums) {
-        vector<int> all;
-        for(auto x: nums){
-            for(auto y: x){
-                all.push_back(y);
+        int k = nums.size();
+        vector<pair<int, int>> newnums;
+        set<pair<int, int>> st;
+        for(int i = 0; i<nums.size(); i++){
+            vector<int> &x = nums[i];
+            for(auto &y: x){
+                st.insert({y, i});
             }
         }
-        vector<int> ans;
-        sort(all.begin(), all.end());
-        int range = all[all.size()-1] - all[0];
-        pair<int, int> curr = {all[all.size()-1], all[0]};
 
-        for(int i = 0; i<all.size(); i++){
-            int low = all[i];
-            int high = low;
-            bool flag = true;
-            for(int j = 0; j<nums.size(); j++){
-                if(high - low >= range) break;
-                vector<int> &arr = nums[j];
-                int ind = lower_bound(arr.begin(), arr.end(), low) - arr.begin();
-                
-                if(ind == arr.size()){
-                    flag = false;
-                    break;
-                } else {
-                    high = max(high, arr[ind]);
-                }
-            }
-
-            if(!flag) break;
-            if(high - low < range){
-                range = high - low;
-                curr = {low , high};
-            }
+        for(auto it = st.begin(); it!= st.end(); it++){
+            newnums.push_back({*it});
         }
-        ans.push_back(curr.first);
-        ans.push_back(curr.second);
-        return ans;
+
+        int n = newnums.size();
+        int range = newnums[newnums.size()-1].first - newnums[0].first;
+        pair<int, int> ans = {newnums[0].first, newnums[n-1].first};
+        int l = 0, r = 0;
+        map<int, int> indset;
+        while(l<n){
+            while(r<n && indset.size() < k){
+                indset[newnums[r].second]++;
+                r++;
+            }
+
+            if(indset.size() == k && newnums[r-1].first - newnums[l].first < range){
+                range = newnums[r-1].first - newnums[l].first;
+                ans.first = newnums[l].first;
+                ans.second = newnums[r-1].first;
+            }
+
+            indset[newnums[l].second]--;
+            if(indset[newnums[l].second] == 0)
+            indset.erase(newnums[l].second);
+
+            l++;
+        }
+
+        vector<int> res;
+        res.push_back(ans.first);
+        res.push_back(ans.second);
+
+        return res;
     }
 };
