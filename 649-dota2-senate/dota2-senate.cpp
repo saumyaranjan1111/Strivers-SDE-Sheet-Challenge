@@ -2,22 +2,22 @@ using ll = long long;
 class Solution {
 public:
     string predictPartyVictory(string senate) {
-        queue<char> og;
-        for(auto x : senate) og.push(x);
-
-        queue<char> q;
-        while(!og.empty()){
-            char x = og.front();
-            og.pop();
-            if(q.empty() || q.front() == x){
-                q.push(x);
+        queue<int> r, d;
+        for(ll i = 0; i<senate.size(); i++){
+            if(senate[i] == 'R') r.push(i);
+            else d.push(i);
+        }
+        while(!r.empty() && !d.empty()){
+            ll a = r.front();
+            ll b = d.front();
+            r.pop(); d.pop();
+            if(a < b){
+                r.push(a + senate.size());
             } else {
-                og.push(q.front());
-                q.pop();
+                d.push(b + senate.size());
             }
         }
-
-        if(q.front() == 'D'){
+        if(r.empty()){
             return "Dire";
         } else return "Radiant";
     }
