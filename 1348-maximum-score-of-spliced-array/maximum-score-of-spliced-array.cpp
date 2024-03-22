@@ -23,16 +23,14 @@ public:
         // for(auto x : delta) cout<<x<<" ";
         // cout<<endl;
         ll ans1 = 0, ans2 = 0;
-        set<ll> minsofar1, minsofar2;
-        minsofar1.insert(0);
-        minsofar2.insert(0);
+        ll minsofar1 = 0, minsofar2 = 0;
         for(auto x : delta1){
-            ans1 = max(ans1, x - *minsofar1.begin());
-            minsofar1.insert(x);
+            ans1 = max(ans1, x - minsofar1);
+            minsofar1 = min(minsofar1, x);
         }
         for(auto x : delta2){
-            ans2 = max(ans2, x - *minsofar2.begin());
-            minsofar2.insert(x);
+            ans2 = max(ans2, x - minsofar2);
+            minsofar2 = min(minsofar2, x);
         }
 
         return max(sum1 + ans1, sum2 + ans2);
