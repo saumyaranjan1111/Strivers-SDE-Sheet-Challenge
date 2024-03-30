@@ -11,21 +11,19 @@
  */
 class Solution {
 public:
-    int findheight(TreeNode* root, int &ans){
+    int solve(TreeNode* root, int &maxd){
         if(root == NULL) return 0;
 
-        int lefth = findheight(root->left, ans);
-        int righth = findheight(root->right, ans);
+        int left = solve(root->left, maxd);
+        int right = solve(root->right, maxd);
 
-        ans = max(ans, lefth + righth);
+        maxd = max(maxd, left + right + 1);
 
-        return max(lefth, righth) + 1;
+        return 1 + max(left, right);
     }
     int diameterOfBinaryTree(TreeNode* root) {
-        // distance between any two nodes = distance of one node from lca + distance of another node from lca
-        int ans = 0;
-
-        int temp =findheight(root, ans);
-        return ans;
+        int maxd = 0;
+        int temp = solve(root, maxd);
+        return maxd-1;
     }
 };
