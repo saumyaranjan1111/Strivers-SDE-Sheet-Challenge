@@ -10,19 +10,40 @@
  * };
  */
 class Solution {
-public:
-    void solve(TreeNode* root, vector<int> &pre){
+private:
+    TreeNode* findPred(TreeNode* curr){
+        // the predecessor node is the rightmost node in the left subtree of root
+        TreeNode* pre = curr->left;
+        while(pre->right != NULL && pre->right != curr){
+            pre = pre->right;
+        }
 
-        if(root == NULL) return;
-        
-        pre.push_back(root->val);
-        solve(root->left, pre);
-        solve(root->right, pre);
-    }
-    vector<int> preorderTraversal(TreeNode* root) {
-        vector<int> pre;
-
-        solve(root, pre);
         return pre;
+    }
+public:
+    vector<int> preorderTraversal(TreeNode* root) {
+        vector<int> ans;
+
+        auto curr = root;
+        while(curr){
+            if(curr->left != NULL){
+                auto pred = findPred(curr);
+                if(pred->right == NULL){
+                    pred->right = curr;
+                    ans.push_back(curr->val);
+                    curr = curr->left;
+                } else {
+                    // pred->right == curr
+                    // this left subtree has already been explored, so now go to the right
+                    pred->right = NULL;
+                    curr = curr->right;
+                }
+            } else {
+                ans.push_back(curr->val);
+                curr = curr->right;
+            }
+        }
+
+        return ans;
     }
 };
