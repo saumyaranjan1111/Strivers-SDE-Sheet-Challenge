@@ -2,23 +2,26 @@ class Solution {
 public:
     int longestConsecutive(vector<int>& nums) {
         int n = nums.size();
-        sort(nums.begin(), nums.end());
-        int ans = 0;
-        int i = 0; 
-        while(i<n){
-            int j = i+1;
-            int dupli = 0;
-            while(j<n){
-                if(nums[j] == nums[j-1] + 1) j++;
-                else if(nums[j] == nums[j-1]){
-                    dupli++;
-                    j++;
-                } else {
-                    break;
+        if(n == 0) return 0;
+        unordered_map<int, int> mp;
+        for(auto x: nums){
+            mp[x] = 1;
+        }
+        int ans = 1;
+        for(auto x: nums){
+            // we want to get to the starting element of the sequence
+            // if x-1 is found then move on
+            if(mp.find(x-1) != mp.end()) continue;
+            else {
+                // x-1 not found, this can be the start of a sequence
+                // start counting
+                int count = 1; 
+                while(mp.find(x+1) != mp.end()){
+                    count++;
+                    x++;
+                    ans = max(ans, count);
                 }
             }
-            ans = max(ans, j-i - dupli);
-            i = j;
         }
         return ans;
     }
