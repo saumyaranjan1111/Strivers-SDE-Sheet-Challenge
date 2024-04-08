@@ -3,18 +3,18 @@ class Solution {
 public:
     int findMin(vector<int>& nums) {
         ll n = nums.size();
-        ll low = 0, high = n-1;
-        ll mid = high/2;
-        ll ans = 0;
-        while(low <= high){
-            mid = low + (high-low)/2;
-            if(nums[mid] > nums[n-1]){
-                low = mid+1;
-            } else {
-                ans = mid;
-                high = mid-1;
+        ll left = 0, right = n-1;
+        ll ans = INT_MAX;
+        while(left <= right){
+            ll mid = left + (right-left)/2;
+            ans = min(ans, (ll)nums[mid]);
+
+            if(nums[mid] <= nums[right]){
+                right = mid-1;
+            } else{
+                left = mid+1;
             }
         }
-        return nums[ans];
+        return ans;
     }
 };
